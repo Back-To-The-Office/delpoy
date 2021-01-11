@@ -1,0 +1,36 @@
+version: '2.3'
+
+services:
+  postgres:
+    image: postgres:11
+    restart: always
+    mem_limit: 2G
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    expose:
+      - 5432
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata/:/var/lib/postgresql/data/
+  backend:
+     image: btto-backend:latest
+     mem_limit: 2G
+     environment:
+       BTTO_DATASOURCE_URL: jdbc:postgresql://postgres:5432/btto
+       SIGNING_KEY: 4321
+     ports:
+       - "8080:8080"
+     expose:
+       - 8080
+volumes:
+  pgdata:
+    driver: local
