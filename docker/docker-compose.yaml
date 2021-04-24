@@ -20,7 +20,7 @@ services:
       - 5432
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-      - pgdata/:/var/lib/postgresql/data/
+      - pg_data:/var/lib/postgresql/data/
   backend:
      image: ghcr.io/back-to-the-office/btto-core:latest
      mem_limit: 2G
@@ -32,5 +32,5 @@ services:
      expose:
        - 8080
 volumes:
-  pgdata:
-    driver: local
+  pg_data:
+
